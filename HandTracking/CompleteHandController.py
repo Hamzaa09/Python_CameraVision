@@ -32,6 +32,7 @@ cTime = 0
 pTime = 0
 volBar = 400
 volPer = 0
+
 while True:
     success,img = cap.read()
     img = cv2.flip(img,1)
