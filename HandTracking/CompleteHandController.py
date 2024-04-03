@@ -1,4 +1,4 @@
-# 640x480
+# 800x600
 
 # volume control -
 # right click -
