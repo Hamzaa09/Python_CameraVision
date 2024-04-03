@@ -35,6 +35,7 @@ volPer = 0
 while True:
     success,img = cap.read()
     img = cv2.flip(img,1)
+    img = cv2.resize(img, (800, 600))
     img = detector.findHands(img)
     lmlist = detector.findPosition(img)
     fingers = detector.fingersCounter()
@@ -45,12 +46,12 @@ while True:
         if {fingers[i] for i in [1,2]} == {1} and {fingers[i] for i in [0,3,4]} == {0}:
             x1,y1 = lmlist[8][1],lmlist[8][2]
             x2,y2 = lmlist[12][1],lmlist[12][2]
-            x = np.interp(x2, [100,540],[0,1280])
-            y = np.interp(y2, [100,380],[0,1024])
+            x = np.interp(x2, [100,600],[0,1280])
+            y = np.interp(y2, [100,400],[0,1024])
             
             mouse.move(x,y,duration=0.1)
 
-            cv2.rectangle(img, (100,100),(540,380) , (255,0,255) ,2)
+            cv2.rectangle(img, (100,100),(700,500) , (255,0,255) ,2)
 
         # left click
         elif fingers[1] == 1 and {fingers[i] for i in [0,2,3,4]} == {0}:
