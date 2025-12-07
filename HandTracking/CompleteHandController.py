@@ -1,5 +1,3 @@
-# 800x600
-
 # volume control -
 # right click -
 # left skip -
@@ -27,7 +25,6 @@ volume.GetVolumeRange()
 cap = cv2.VideoCapture(0)
 detector = htm.handDetector(maxHands=1)
 
-
 cTime = 0
 pTime = 0
 volBar = 400
@@ -36,6 +33,7 @@ volPer = 0
 while True:
     success,img = cap.read()
     img = cv2.flip(img,1)
+    width, height = pyautogui.size()
     img = cv2.resize(img, (800, 600))
     img = detector.findHands(img)
     lmlist = detector.findPosition(img)
@@ -47,8 +45,8 @@ while True:
         if {fingers[i] for i in [1,2]} == {1} and {fingers[i] for i in [0,3,4]} == {0}:
             x1,y1 = lmlist[8][1],lmlist[8][2]
             x2,y2 = lmlist[12][1],lmlist[12][2]
-            x = np.interp(x2, [100,600],[0,1280])
-            y = np.interp(y2, [100,400],[0,1024])
+            x = np.interp(x2, [100,600],[0,width])
+            y = np.interp(y2, [100,400],[0,height])
             
             mouse.move(x,y,duration=0.1)
 
@@ -57,26 +55,32 @@ while True:
         # left click
         elif fingers[1] == 1 and {fingers[i] for i in [0,2,3,4]} == {0}:
             mouse.click('left')
+            time.sleep(1)
             
         # right click
         elif fingers[2] == 1 and {fingers[i] for i in [0,1,3,4]} == {0}:
             mouse.click('right')
+            time.sleep(1)
 
         # right skip
         elif fingers[4] == 1 and {fingers[i] for i in [0,1,2,3]} == {0}:
             pyautogui.press('right')
+            time.sleep(1)
         
         # left skip
         elif {fingers[i] for i in [1,2,3,4]} == {0} and fingers[0] == 1:
             pyautogui.press('left')
+            time.sleep(1)
         
         # Scroll Downn
         elif {fingers[i] for i in [0,1,2]} == {1} and {fingers[i] for i in [3,4]} == {0}:
             mouse.wheel(-1)
+            time.sleep(0.5)
 
         # Scroll Up
         elif {fingers[i] for i in [0,1,2,3]} == {1} and {fingers[i] for i in [4]} == {0}:
             mouse.wheel(1)
+            time.sleep(0.5)
 
         # Volume Control
         elif {fingers[i] for i in [0,1,4]} == {1} and {fingers[i] for i in [2,3]} == {0}:
@@ -118,4 +122,7 @@ while True:
     cv2.putText(img, f'FPS:{fps}', (10,25), 5 , cv2.FONT_HERSHEY_PLAIN, (0),2)
 
     cv2.imshow("Hand Controller",img)
-    cv2.waitKey(1)    
+    if cv2.waitKey(1) == ord('q'):
+        break
+   
+cv2.destroyAllWindows()
